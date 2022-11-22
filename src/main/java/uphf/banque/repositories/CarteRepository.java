@@ -1,4 +1,4 @@
 package uphf.banque.repositories;
 
-public class CarteRepository {
+public interface CarteRepository {
 }
