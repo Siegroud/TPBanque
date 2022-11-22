@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.transaction.Transaction;
 import java.util.Date;
@@ -24,8 +25,11 @@ public class Compte {
     private String typeCompte;
     private Date dateCreation;
 
-    @OneToMany
+    @ManyToMany
     List<Client> titulaireCompte;
+
+    @OneToMany
+    List<Carte> cartes;
 
     //  List<Transaction> transactions;
 
