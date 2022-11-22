@@ -9,4 +9,6 @@ public class ClientService {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    public
 }
