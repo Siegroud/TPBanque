@@ -8,24 +8,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uphf.banque.entities.Client;
 import uphf.banque.services.ClientService;
+import uphf.banque.services.dto.client.GetClientResponse;
 
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping(clients)
+@RequestMapping("clients")
 public class ClientController {
 
     @Autowired
     private ClientService clientService;
 
     @GetMapping
-    public ResponseEntity getClient(@RequestParam("nom") String nom, @RequestParam("prenom") String prenom) {
-        if(nom == null || prenom == null){
-            return ResponseEntity
-                    .badRequest();
-        }else{
-            return ResponseEntity.ok().body(this.clientService.)
-        }
+    public GetClientResponse getClientByNomAndPrenom(@RequestParam("nom") String nom, @RequestParam("prenom") String prenom) {
+        return clientService.getClientByNomAndPrenom(nom,prenom);
     }
+
+
 
 }

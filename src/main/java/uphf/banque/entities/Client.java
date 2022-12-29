@@ -24,6 +24,8 @@ public class Client {
     private String nom;
     private Date dateNaissance;
     private String telephone;
+
+    private String adressePostale;
     private Date dateCreation;
     private int codeBanque;
     private int codeGuichet;

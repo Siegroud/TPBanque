@@ -16,4 +16,6 @@ public class GetClientResponse {
     private String telephone;
     private String adressePostale;
     private Date dateCreation;
+
+
 }
