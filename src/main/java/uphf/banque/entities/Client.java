@@ -1,10 +1,8 @@
 package uphf.banque.entities;
 
 import lombok.*;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +28,7 @@ public class Client {
     private int codeBanque;
     private int codeGuichet;
 
-    @OneToMany
+    @ManyToMany
     private List<Compte> comptes;
 
 }

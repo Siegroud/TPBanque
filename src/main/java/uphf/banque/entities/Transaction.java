@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.util.Date;
 
 @Entity
@@ -21,6 +22,12 @@ public class Transaction {
     private float montant;
     private TypeTransaction typeTransaction;
     private Date dateCreation;
-    private String source;
+    private String idSource;
+
+    @ManyToOne
+    private Compte beneficiaire;
+
+    @ManyToOne
+    private Compte emetteur;
 
 }

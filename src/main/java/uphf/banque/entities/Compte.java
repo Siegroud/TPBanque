@@ -31,6 +31,9 @@ public class Compte {
     @OneToMany
     List<Carte> cartes;
 
-    //  List<Transaction> transactions;
+    @OneToMany(mappedBy = "beneficiaire")
+    private List<Transaction> transacBenef;
+    @OneToMany(mappedBy = "emetteur")
+    private List<Transaction> transacEmet;
 
 }
