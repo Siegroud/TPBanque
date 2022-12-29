@@ -1,5 +1,10 @@
 package uphf.banque.repositories;
 
-public interface CarteRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import uphf.banque.entities.Carte;
 
+@Repository
+public interface CarteRepository extends JpaRepository<Carte,Integer> {
+    Carte findCarteByIban(String iban);
 }

@@ -18,7 +18,7 @@ public class Carte {
     @Id
     private String numeroCarte;
 
-    private Date dateExpiration;
+    private String dateExpiration;
 
     @OneToOne
     private Client titulaireCarte;
