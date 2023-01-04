@@ -22,8 +22,8 @@ public class CompteService extends ExceptionService{
 
     private static final String COMPTE_NON_TROUVE = "Le compte n'a pas été trouvé.";
 
-    public GetTitulairesCompteResponse getClientByCompte(Compte compte) throws ProcessException{
-        Client cli = clientRepository.findClientByCompte(compte);
+    public GetTitulairesCompteResponse getClientsByCompte(Compte compte) throws ProcessException{
+        Client cli = clientRepository.findClientsByCompte(compte);
         if (cli == null) throw new ProcessException(String.format(COMPTE_NON_TROUVE, compte)); //TODO gère ça stp
 
         return GetTitulairesCompteResponse.builder()
