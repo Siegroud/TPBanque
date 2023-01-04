@@ -1,4 +1,4 @@
-package uphf.banque.services.dto.client;
+package uphf.banque.entities.rest;
 
 import lombok.Builder;
 import lombok.Getter;

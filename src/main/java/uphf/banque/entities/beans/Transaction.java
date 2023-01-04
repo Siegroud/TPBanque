@@ -1,11 +1,9 @@
-package uphf.banque.entities;
+package uphf.banque.entities.beans;
 
 import lombok.*;
+import uphf.banque.entities.TypeTransaction;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -16,7 +14,7 @@ import java.util.Date;
 @Builder
 public class Transaction {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private float montant;
@@ -24,10 +22,5 @@ public class Transaction {
     private Date dateCreation;
     private String idSource;
 
-    @ManyToOne
-    private Compte beneficiaire;
-
-    @ManyToOne
-    private Compte emetteur;
 
 }

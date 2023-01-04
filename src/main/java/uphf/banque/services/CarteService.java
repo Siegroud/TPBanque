@@ -2,18 +2,12 @@ package uphf.banque.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uphf.banque.entities.Carte;
-import uphf.banque.entities.Client;
-import uphf.banque.entities.Compte;
+import uphf.banque.entities.beans.Carte;
+import uphf.banque.entities.rest.GetComptesResponse;
 import uphf.banque.exceptions.ProcessException;
 import uphf.banque.repositories.CarteRepository;
 import uphf.banque.repositories.CompteRepository;
-import uphf.banque.services.dto.client.GetCarteResponse;
-import uphf.banque.services.dto.client.GetClientResponse;
-import uphf.banque.services.dto.client.GetComptesResponse;
-
-import java.util.ArrayList;
-import java.util.List;
+import uphf.banque.entities.rest.GetCarteResponse;
 
 
 @Service
@@ -29,9 +23,9 @@ public class CarteService {
 
     public GetCarteResponse getCarteResponse(String iban) throws ProcessException{
 
-        Carte carte = (Carte) carteRepository.findCarteByIban(iban);
+        Carte carte = carteRepository.findCarteByIban(iban);
 
-        String idClient = Integer.toString(carte.getTitulaireCarte().getId());
+        GetComptesResponse getComptesResponse = compteRepository.
 
         if (carte == null) throw new ProcessException(String.format(CARTE_NON_TROUVEE, iban));
         GetCarteResponse getCarteResponse = GetCarteResponse.builder()

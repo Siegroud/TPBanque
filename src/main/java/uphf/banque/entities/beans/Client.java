@@ -1,4 +1,4 @@
-package uphf.banque.entities;
+package uphf.banque.entities.beans;
 
 import lombok.*;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class Client {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String prenom;

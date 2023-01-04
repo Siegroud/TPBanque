@@ -2,10 +2,10 @@ package uphf.banque.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uphf.banque.entities.Client;
+import uphf.banque.entities.beans.Client;
 import uphf.banque.exceptions.ProcessException;
 import uphf.banque.repositories.ClientRepository;
-import uphf.banque.services.dto.client.GetClientResponse;
+import uphf.banque.entities.rest.GetClientResponse;
 
 @Service
 public class ClientService {
@@ -13,6 +13,7 @@ public class ClientService {
     public static final String CLIENT_NON_TROUVE = "Le client n'a pas été trouvé.";
     @Autowired
     private ClientRepository clientRepository;
+
 
     public GetClientResponse getClientByNomAndPrenom(String nom, String prenom)throws ProcessException {
         Client cli = (Client) clientRepository.findClientByPrenomAndNom(nom,prenom);

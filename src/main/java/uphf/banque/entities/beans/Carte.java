@@ -1,12 +1,8 @@
-package uphf.banque.entities;
+package uphf.banque.entities.beans;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import java.util.Date;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -16,15 +12,16 @@ import java.util.Date;
 @Builder
 public class Carte {
     @Id
-    private String numeroCarte;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
+    private String numeroCarte;
     private String dateExpiration;
 
     @OneToOne
     private Client titulaireCarte;
 
     @ManyToOne
-    private Compte iban;
-
+    private Compte compte;
     private int code;
 }

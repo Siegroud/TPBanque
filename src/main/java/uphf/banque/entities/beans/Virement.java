@@ -1,9 +1,10 @@
-package uphf.banque.entities;
+package uphf.banque.entities.beans;
 
 import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Date;
 
@@ -15,10 +16,11 @@ import java.util.Date;
 @Builder
 public class Virement {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idVirement;
     private Date dateCreation;
 
+    private double montant;
     private String ibanCompteEmetteur;
     private String ibanCompteBeneficiaire;
 
