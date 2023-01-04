@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import uphf.banque.entities.Client;
+import uphf.banque.entities.TypeCompte;
 
 import javax.persistence.OneToMany;
 import javax.transaction.Transaction;
@@ -20,11 +21,10 @@ public class GetComptesResponse {
     private double solde;
     private String intituleCompte;
 
-    private String typeCompte;
+    private TypeCompte typeCompte;
 
-    private List<Integer> titulairesCompte;
-    private List<Transaction> transacBenef;
-    private List<Transaction> transacEmet;
+    private List<GetTitulairesCompteResponse> titulairesCompte;
+    private List<GetTransactionsCompteResponse> transactions;
 
 
 }

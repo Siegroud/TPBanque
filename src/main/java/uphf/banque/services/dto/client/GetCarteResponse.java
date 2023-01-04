@@ -8,10 +8,11 @@ import lombok.Setter;
 @Setter
 @Builder
 public class GetCarteResponse {
-    private String titulaireCarte;
 
     private String numeroCarte;
 
     private String dateExpiration;
+
+    private GetTitulairesCompteResponse titulaireCarte;
 
 }
