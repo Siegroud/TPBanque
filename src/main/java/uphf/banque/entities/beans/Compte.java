@@ -19,7 +19,7 @@ public class Compte {
     private Integer id;
 
     private String iban;
-    private float solde;
+    private String solde;
     private String intituleCompte;
     private TypeCompte typeCompte;
     private String dateCreation;

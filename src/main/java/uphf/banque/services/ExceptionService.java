@@ -2,10 +2,11 @@ package uphf.banque.services;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import uphf.banque.exceptions.NotValidException;
 import uphf.banque.exceptions.ProcessException;
-
+@Service
 public class ExceptionService {
 
     @ExceptionHandler(NotValidException.class)

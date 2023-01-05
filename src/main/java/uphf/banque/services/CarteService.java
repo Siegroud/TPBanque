@@ -23,7 +23,7 @@ public class CarteService {
 
     public GetCarteResponse getCarteResponse(String iban) throws ProcessException{
 
-        Carte carte = carteRepository.findCarteByIban(iban);
+        Carte carte = carteRepository.findCarteByCompte(iban);
 
         GetComptesResponse getComptesResponse = compteRepository.
 

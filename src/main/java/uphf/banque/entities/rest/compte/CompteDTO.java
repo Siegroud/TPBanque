@@ -19,4 +19,6 @@ public class CompteDTO {
     private TypeCompte typecompte;
 
     private List<String> titulairesCompte;
+
+    private List<TransactionDTO> transactions;
 }

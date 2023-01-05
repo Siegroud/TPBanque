@@ -5,14 +5,14 @@ import org.springframework.stereotype.Service;
 import uphf.banque.entities.TypeCompte;
 import uphf.banque.entities.beans.Client;
 import uphf.banque.entities.beans.Compte;
-import uphf.banque.entities.rest.compte.CompteDTO;
-import uphf.banque.entities.rest.compte.PostCompteRequest;
-import uphf.banque.entities.rest.compte.PostCompteResponse;
+import uphf.banque.entities.beans.Transaction;
+import uphf.banque.entities.rest.compte.*;
 import uphf.banque.repositories.ClientRepository;
 import uphf.banque.repositories.CompteRepository;
-import uphf.banque.entities.rest.compte.GetComptesResponse;
+import uphf.banque.repositories.TransactionRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,26 +23,50 @@ public class CompteService extends ExceptionService{
     @Autowired
     ClientRepository clientRepository;
 
-    private static final String COMPTE_NON_TROUVE = "Le compte n'a pas été trouvé.";
+    @Autowired
+    TransactionRepository transactionRepository;
 
+    @Autowired
+    TransactionService transactionService;
+    private static final String COMPTE_NON_TROUVE = "Le compte n'a pas été trouvé.";
 
     public GetComptesResponse getComptesByIdClient(int id) {
         Client cli = clientRepository.findClientById(id);
 
         List<Compte> listcom = compteRepository.findComptesByClient(cli);
 
+        List<CompteDTO> listcomDTO = new ArrayList<>();
+
         for (Compte com : listcom) {
+            List<String> listId = new ArrayList<>();
+
+            List<TransactionDTO> listDTO = new ArrayList<>();
+
+            List<Transaction> listtran = transactionRepository.findTransactionsByCompte(com);
+
+            for (Transaction transaction: listtran) {
+                listDTO.add(transactionService.getTransactionDTO(transaction));
+            }
+
+            for(Client titulaire : com.getTitulairesCompte()){
+                listId.add(Integer.toString(titulaire.getId()));
+            }
+
+
             CompteDTO comDTO = CompteDTO.builder()
                     .iban(com.getIban())
                     .solde(com.getSolde())
                     .intituleCompte(com.getIntituleCompte())
                     .typecompte(com.getTypeCompte())
-                    .titulairesCompte(com.getTitulairesCompte())
-                    .transactions()
+                    .titulairesCompte(listId)
+                    .transactions(listDTO)
+                    .build();
+
+            listcomDTO.add(comDTO);
         }
 
 
-        return new GetComptesResponse(listcom);
+        return GetComptesResponse.builder().comptes(listcomDTO).build();
     }
 
     public String calculNumeroCompte(){
@@ -67,7 +91,7 @@ public class CompteService extends ExceptionService{
                 .titulairesCompte(postCompteRequest.getTitulairesCompte())
                 .iban(iban)
                 .dateCreation((LocalDateTime.now()).toString())
-                .solde(0)
+                .solde("0")
                 .build();
         compteRepository.save(com);
 

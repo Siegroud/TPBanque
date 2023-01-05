@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -13,6 +15,6 @@ public class GetCarteResponse {
 
     private String dateExpiration;
 
-    private String titulaireCarte;
+    private List<String> titulaireCarte;
 
 }
