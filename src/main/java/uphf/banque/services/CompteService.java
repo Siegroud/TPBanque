@@ -24,7 +24,7 @@ public class CompteService extends ExceptionService{
 
     public GetTitulairesCompteResponse getClientsByCompte(Compte compte) throws ProcessException{
         Client cli = clientRepository.findClientsByCompte(compte);
-        if (cli == null) throw new ProcessException(String.format(COMPTE_NON_TROUVE, compte)); //TODO gère ça stp
+        if (cli == null) throw new ProcessException(String.format((COMPTE_NON_TROUVE + "%s"), compte));
 
         return GetTitulairesCompteResponse.builder()
                 .idClient(Integer.toString(cli.getId())).build();

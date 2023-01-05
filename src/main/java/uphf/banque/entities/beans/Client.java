@@ -43,6 +43,6 @@ public class Client {
         this.comptes = comptes;
     }
 
-    //TODO SIEGRID GENERE UN CONSTRUCTEUR AVEC TOUS LES ATTRIBUTS SAUF ID STP
+
 
 }

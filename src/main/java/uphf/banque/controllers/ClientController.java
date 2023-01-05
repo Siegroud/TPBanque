@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import uphf.banque.entities.beans.Compte;
-import uphf.banque.entities.rest.PostClientResponse;
+import uphf.banque.entities.rest.client.PostClientResponse;
 import uphf.banque.exceptions.ProcessException;
 import uphf.banque.services.ClientService;
-import uphf.banque.entities.rest.GetClientResponse;
+import uphf.banque.entities.rest.client.GetClientResponse;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,12 +1,10 @@
-package uphf.banque.entities.rest;
+package uphf.banque.entities.rest.client;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import uphf.banque.entities.beans.Client;
 
-import javax.persistence.Entity;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -19,10 +17,4 @@ public class GetClientResponse {
     public GetClientResponse(List<Client> clients) {
         this.clients = clients;
     }
-}
-
-public class PostClientResponse {
-
-    private Client client;
-
 }

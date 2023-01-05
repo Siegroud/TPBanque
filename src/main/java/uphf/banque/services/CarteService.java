@@ -7,7 +7,7 @@ import uphf.banque.entities.rest.GetComptesResponse;
 import uphf.banque.exceptions.ProcessException;
 import uphf.banque.repositories.CarteRepository;
 import uphf.banque.repositories.CompteRepository;
-import uphf.banque.entities.rest.GetCarteResponse;
+import uphf.banque.entities.rest.carte.GetCarteResponse;
 
 
 @Service
@@ -27,7 +27,7 @@ public class CarteService {
 
         GetComptesResponse getComptesResponse = compteRepository.
 
-        if (carte == null) throw new ProcessException(String.format(CARTE_NON_TROUVEE, iban));
+        if (carte == null) throw new ProcessException(String.format((CARTE_NON_TROUVEE + "%s"), iban));
         GetCarteResponse getCarteResponse = GetCarteResponse.builder()
                 .numeroCarte(carte.getNumeroCarte())
                 .dateExpiration(carte.getDateExpiration())
