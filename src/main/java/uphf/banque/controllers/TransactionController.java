@@ -10,7 +10,7 @@ import uphf.banque.services.TransactionService;
 @RequestMapping("paiement")
 public class TransactionController {
     @Autowired
-    TransactionService transactionService;
+    private TransactionService transactionService;
     @GetMapping
     public TransactionDTO getTransactionDTO(@RequestBody Transaction transaction){
         return transactionService.getTransactionDTO(transaction);

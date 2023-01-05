@@ -22,16 +22,16 @@ import java.util.List;
 @Service
 public class CompteService extends ExceptionService{
     @Autowired
-    CompteRepository compteRepository;
+    private CompteRepository compteRepository;
 
     @Autowired
-    ClientRepository clientRepository;
+    private ClientRepository clientRepository;
 
     @Autowired
-    TransactionRepository transactionRepository;
+    private TransactionRepository transactionRepository;
 
     @Autowired
-    TransactionService transactionService;
+    private TransactionService transactionService;
 
     @Autowired
     CarteRepository carteRepository;

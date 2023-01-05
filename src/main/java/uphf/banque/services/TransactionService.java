@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class TransactionService {
     @Autowired
-    TransactionRepository transactionRepository;
+    private TransactionRepository transactionRepository;
     public List<Transaction> getTransactionsByCompte(Compte compte){
         List<Transaction> list = transactionRepository.findTransactionsByCompte(compte);
         return list;

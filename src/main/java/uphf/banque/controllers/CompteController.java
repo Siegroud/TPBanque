@@ -14,7 +14,7 @@ import uphf.banque.services.TransactionService;
 @RequestMapping("comptes")
 public class CompteController extends ExceptionService {
     @Autowired
-    CompteService compteService;
+    private CompteService compteService;
 
 
 

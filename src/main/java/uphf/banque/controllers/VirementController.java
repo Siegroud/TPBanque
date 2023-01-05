@@ -13,7 +13,7 @@ import uphf.banque.services.VirementService;
 public class VirementController {
 
     @Autowired
-    VirementService virementService;
+    private VirementService virementService;
 
     public PostVirementResponse createVirement(@RequestBody PostVirementRequest postVirementRequest){
         return virementService.createVirement(postVirementRequest);

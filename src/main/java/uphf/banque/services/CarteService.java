@@ -22,14 +22,13 @@ import java.util.List;
 
 @Service
 public class CarteService extends ExceptionService{
+    @Autowired
+    private CarteRepository carteRepository;
+    @Autowired
+    private CompteService compteService;
 
     @Autowired
-    CompteService compteService;
-    @Autowired
-    CarteRepository carteRepository;
-
-    @Autowired
-    CompteRepository compteRepository;
+    private CompteRepository compteRepository;
 
     public static final String CARTE_NON_TROUVEE = "Carte non trouvée.";
 

@@ -15,10 +15,10 @@ import java.util.List;
 
 @Service
 public class ClientService extends ExceptionService {
-
-    public static final String CLIENT_NON_TROUVE = "Le client n'a pas été trouvé.";
     @Autowired
     private ClientRepository clientRepository;
+    public static final String CLIENT_NON_TROUVE = "Le client n'a pas été trouvé.";
+
 
 
     public GetClientResponse getClientsByNomAndPrenom(String nom, String prenom)throws ProcessException {

@@ -24,12 +24,12 @@ import java.util.List;
 public class VirementService {
 
     @Autowired
-    VirementRepository virementRepository;
+    private VirementRepository virementRepository;
     @Autowired
-    CompteRepository compteRepository;
+    private CompteRepository compteRepository;
 
     @Autowired
-    TransactionService transactionService;
+    private TransactionService transactionService;
 
     public PostVirementResponse createVirement(PostVirementRequest postVirementRequest){
 

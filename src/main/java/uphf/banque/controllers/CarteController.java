@@ -14,7 +14,7 @@ import uphf.banque.services.CarteService;
 public class CarteController {
 
     @Autowired
-    CarteService carteService;
+    private CarteService carteService;
 
     @GetMapping("/comptes/{iban}/cartes")
     public GetCarteResponse getCarteByIban(@RequestParam("iban") String iban) throws ProcessException {
