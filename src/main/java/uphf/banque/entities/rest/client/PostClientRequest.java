@@ -1,11 +1,11 @@
 package uphf.banque.entities.rest.client;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import uphf.banque.entities.beans.Client;
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class PostClientRequest {
     private String prenom;

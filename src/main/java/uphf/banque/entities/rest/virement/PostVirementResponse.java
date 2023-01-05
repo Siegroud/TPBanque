@@ -1,14 +1,14 @@
 package uphf.banque.entities.rest.virement;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import uphf.banque.entities.rest.compte.TransactionDTO;
 
 import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class PostVirementResponse {
     private String idVirement;

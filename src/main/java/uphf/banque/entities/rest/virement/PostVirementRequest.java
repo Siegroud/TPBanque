@@ -1,11 +1,11 @@
 package uphf.banque.entities.rest.virement;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class PostVirementRequest {
     private String ibanCompteEmetteur;
