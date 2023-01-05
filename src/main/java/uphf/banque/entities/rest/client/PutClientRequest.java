@@ -8,4 +8,15 @@ import lombok.Setter;
 @Setter
 @Builder
 public class PutClientRequest {
+    private int id;
+
+    private String prenom;
+
+    private String nom;
+
+    private String dateNaissance;
+
+    private String telephone;
+
+    private String adressePostale;
 }

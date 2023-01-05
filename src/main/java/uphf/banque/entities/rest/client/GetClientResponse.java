@@ -17,4 +17,5 @@ public class GetClientResponse {
     public GetClientResponse(List<Client> clients) {
         this.clients = clients;
     }
+    
 }
