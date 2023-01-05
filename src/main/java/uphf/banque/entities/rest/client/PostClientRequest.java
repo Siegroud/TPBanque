@@ -8,4 +8,13 @@ import uphf.banque.entities.beans.Client;
 @Setter
 @Builder
 public class PostClientRequest {
+    private String prenom;
+
+    private String nom;
+
+    private String dateNaissance;
+
+    private String telephone;
+
+    private String adressePostale;
 }

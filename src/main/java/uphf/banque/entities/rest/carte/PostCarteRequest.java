@@ -8,4 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class PostCarteRequest {
+    private String titulaireCarte;
+
+    private int code;
 }

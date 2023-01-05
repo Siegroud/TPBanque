@@ -1,4 +1,4 @@
-package uphf.banque.entities.rest;
+package uphf.banque.entities.rest.compte;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -16,13 +16,7 @@ import java.util.List;
 
 public class GetComptesResponse {
 
-    private List<Compte> comptes;
-
-
-
-    public GetComptesResponse(List<Compte> comptes) {
-        this.comptes = comptes;
-    }
+    private List<CompteDTO> comptes;
 
 
 }

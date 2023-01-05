@@ -3,7 +3,7 @@ package uphf.banque.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uphf.banque.entities.beans.Carte;
-import uphf.banque.entities.rest.GetComptesResponse;
+import uphf.banque.entities.rest.compte.GetComptesResponse;
 import uphf.banque.exceptions.ProcessException;
 import uphf.banque.repositories.CarteRepository;
 import uphf.banque.repositories.CompteRepository;

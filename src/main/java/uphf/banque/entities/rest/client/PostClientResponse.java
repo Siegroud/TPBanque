@@ -10,6 +10,17 @@ import uphf.banque.entities.beans.Client;
 @Builder
 public class PostClientResponse {
 
-    private Client client;
+    private int id;
+
+    private String prenom;
+
+    private String nom;
+
+    private String dateNaissance;
+
+    private String telephone;
+    private String adressePostale;
+
+    private String dateCreation;
 
 }

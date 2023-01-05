@@ -3,7 +3,7 @@ package uphf.banque.entities.rest.carte;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import uphf.banque.entities.rest.GetTitulairesCompteResponse;
+import uphf.banque.entities.rest.compte.GetTitulairesCompteResponse;
 
 @Getter
 @Setter

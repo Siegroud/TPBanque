@@ -1,4 +1,4 @@
-package uphf.banque.entities.rest;
+package uphf.banque.entities.rest.compte;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,5 +11,5 @@ import java.util.List;
 @Setter
 @Builder
 public class GetTitulairesCompteResponse {
-    private List<Client> clients;
+    private String idClient;
 }

@@ -8,4 +8,9 @@ import lombok.Setter;
 @Setter
 @Builder
 public class PostCarteResponse {
+    private String titulaireCarte;
+
+    private String numeroCarte;
+
+    private String dateExpiration;
 }

@@ -2,17 +2,15 @@ package uphf.banque.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import uphf.banque.entities.beans.Client;
 import uphf.banque.entities.beans.Compte;
-import uphf.banque.entities.rest.client.PostClientResponse;
-import uphf.banque.entities.rest.client.PutClientRequest;
-import uphf.banque.entities.rest.client.PutClientResponse;
+import uphf.banque.entities.rest.client.*;
 import uphf.banque.exceptions.ProcessException;
 import uphf.banque.repositories.ClientRepository;
-import uphf.banque.entities.rest.client.GetClientResponse;
-import java.util.Date;
 
+import java.time.LocalDateTime;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,43 +32,55 @@ public class ClientService {
 
 
 
-    public PostClientResponse createClient(String prenom, String nom, String dateNaissance, String telephone, String adressepostale, List<Compte> compteList){
+    public PostClientResponse createClient(PostClientRequest postClientRequest){
 
+        List<Compte> list = new ArrayList<>();
         Client cli = Client.builder()
-                .prenom(prenom)
-                .nom(nom)
-                .dateNaissance(dateNaissance)
-                .telephone(telephone)
-                .adressePostale(adressepostale)
-                .comptes(compteList)
+                .prenom(postClientRequest.getPrenom())
+                .nom(postClientRequest.getNom())
+                .dateNaissance(postClientRequest.getDateNaissance())
+                .telephone(postClientRequest.getTelephone())
+                .adressePostale(postClientRequest.getAdressePostale())
+                .dateCreation((LocalDateTime.now()).toString())
+                .codeBanque(30003)
+                .codeGuichet(02054)
+                .comptes(list)
+                .dateModification(null)
                 .build();
 
         clientRepository.save(cli); //Crée le client dans la BDD
 
         return PostClientResponse.builder()
-                .client(cli)
+                .id(cli.getId())
+                .prenom(cli.getPrenom())
+                .nom(cli.getNom())
+                .dateNaissance(cli.getDateNaissance())
+                .telephone(cli.getTelephone())
+                .adressePostale(cli.getAdressePostale())
+                .dateCreation(cli.getDateCreation())
                 .build();
     }
 
 
-    public PutClientRequest updateClientRequest(@RequestParam("id") int id,@RequestParam("prenom") String prenom,@RequestParam("nom") String nom,
-                                                @RequestParam("dateNaissance") String dateNaissance, @RequestParam("telephone") String telephone,
-                                                @RequestParam("adressePostale") String adressePostale) throws ProcessException{
-        Client cli = clientRepository.findClientById(id);
+    public PutClientResponse updateClient(PutClientRequest putClientRequest) throws ProcessException {
+        Client cli = clientRepository.findClientById(putClientRequest.getId());
 
-        if (cli == null) throw new ProcessException(String.format((CLIENT_NON_TROUVE + "%s"),id));
+        if (cli == null) throw new ProcessException(String.format((CLIENT_NON_TROUVE + "%s"),putClientRequest.getId()));
 
-        cli.setPrenom(prenom);
-        cli.setNom(nom);
-        cli.setDateNaissance(dateNaissance);
-        cli.setTelephone(telephone);
-        cli.setAdressePostale(adressePostale);
+        cli.setPrenom(putClientRequest.getPrenom());
+        cli.setNom(putClientRequest.getNom());
+        cli.setDateNaissance(putClientRequest.getDateNaissance());
+        cli.setTelephone(putClientRequest.getTelephone());
+        cli.setAdressePostale(putClientRequest.getAdressePostale());
+        cli.setDateModification((LocalDateTime.now()).toString());
         clientRepository.save(cli);
 
-
-    }
-    public PutClientResponse updateClientResponse(String nom,String prenom) throws ProcessException{
-
+        return PutClientResponse.builder()
+                .prenom(putClientRequest.getPrenom())
+                .nom(putClientRequest.getNom())
+                .dateNaissance(putClientRequest.getDateNaissance())
+                .telephone(putClientRequest.getTelephone())
+                .adressePostale(putClientRequest.getAdressePostale()).build();
     }
 
 }

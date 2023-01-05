@@ -22,7 +22,7 @@ public class Compte {
     private float solde;
     private String intituleCompte;
     private TypeCompte typeCompte;
-    private Date dateCreation;
+    private String dateCreation;
 
     @ManyToMany
     List<Client> titulairesCompte;

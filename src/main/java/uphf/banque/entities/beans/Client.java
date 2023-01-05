@@ -28,6 +28,7 @@ public class Client {
     private int codeBanque;
     private int codeGuichet;
 
+    private String dateModification;
     @ManyToMany
     private List<Compte> comptes;
 

@@ -4,11 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import uphf.banque.entities.beans.Compte;
-import uphf.banque.entities.rest.client.PostClientResponse;
-import uphf.banque.entities.rest.client.PutClientResponse;
+import uphf.banque.entities.rest.client.*;
+import uphf.banque.entities.rest.compte.PostCompteRequest;
 import uphf.banque.exceptions.ProcessException;
 import uphf.banque.services.ClientService;
-import uphf.banque.entities.rest.client.GetClientResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,14 +31,14 @@ public class ClientController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
-    public PostClientResponse createClient(@RequestParam("prenom") String prenom, @RequestParam("nom") String nom, @RequestParam("dateNaissance") String dateNaissance,
-                                           @RequestParam("telephone") String telephone, @RequestParam("adressePostale") String adressePostale) throws ProcessException {
-        return clientService.createClient(prenom,nom,dateNaissance,telephone,adressePostale, new ArrayList<>());
+    public PostClientResponse createClient(@RequestBody PostClientRequest postClientRequest) throws ProcessException {
+        return clientService.createClient(postClientRequest);
     }
 
     @PutMapping
-    public PutClientResponse updateClientsByNomAndPrenom(@RequestParam("nom") String nom, @RequestParam("prenom") String prenom) throws ProcessException {
-        return clientService.updateClientsByNomAndPrenom(nom,prenom);
+    public PutClientResponse updateClient(@RequestBody PutClientRequest putClientRequest)  throws ProcessException {
+
+        return clientService.updateClient(putClientRequest);
     }
 
 }
