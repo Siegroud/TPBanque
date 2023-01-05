@@ -8,6 +8,6 @@ import uphf.banque.entities.beans.Transaction;
 import java.util.List;
 
 @Repository
-public interface TransactionRepository extends JpaRepository<Compte,Integer> {
+public interface TransactionRepository extends JpaRepository<Transaction,Integer> {
     List<Transaction> findTransactionsByCompte(Compte compte);
 }
