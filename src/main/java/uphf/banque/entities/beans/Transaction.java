@@ -1,6 +1,7 @@
 package uphf.banque.entities.beans;
 
 import lombok.*;
+import uphf.banque.entities.TypeSource;
 import uphf.banque.entities.TypeTransaction;
 
 import javax.persistence.*;
@@ -19,6 +20,8 @@ public class Transaction {
 
     private float montant;
     private TypeTransaction typeTransaction;
+
+    private TypeSource typeSource;
     private Date dateCreation;
     private String idSource;
 

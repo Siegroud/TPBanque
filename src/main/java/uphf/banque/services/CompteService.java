@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import uphf.banque.entities.TypeCompte;
 import uphf.banque.entities.beans.Client;
 import uphf.banque.entities.beans.Compte;
+import uphf.banque.entities.rest.compte.CompteDTO;
 import uphf.banque.entities.rest.compte.PostCompteRequest;
 import uphf.banque.entities.rest.compte.PostCompteResponse;
 import uphf.banque.repositories.ClientRepository;
@@ -29,6 +30,16 @@ public class CompteService extends ExceptionService{
         Client cli = clientRepository.findClientById(id);
 
         List<Compte> listcom = compteRepository.findComptesByClient(cli);
+
+        for (Compte com : listcom) {
+            CompteDTO comDTO = CompteDTO.builder()
+                    .iban(com.getIban())
+                    .solde(com.getSolde())
+                    .intituleCompte(com.getIntituleCompte())
+                    .typecompte(com.getTypeCompte())
+                    .titulairesCompte(com.getTitulairesCompte())
+                    .transactions()
+        }
 
 
         return new GetComptesResponse(listcom);

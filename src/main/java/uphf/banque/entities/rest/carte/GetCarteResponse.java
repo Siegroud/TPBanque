@@ -3,7 +3,6 @@ package uphf.banque.entities.rest.carte;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import uphf.banque.entities.rest.compte.GetTitulairesCompteResponse;
 
 @Getter
 @Setter
@@ -14,6 +13,6 @@ public class GetCarteResponse {
 
     private String dateExpiration;
 
-    private GetTitulairesCompteResponse titulaireCarte;
+    private String titulaireCarte;
 
 }
