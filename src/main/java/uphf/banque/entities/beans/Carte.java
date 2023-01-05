@@ -18,8 +18,7 @@ public class Carte {
     private String numeroCarte;
     private String dateExpiration;
 
-    @OneToOne
-    private Client titulaireCarte;
+    private String titulaireCarte;
 
     @ManyToOne
     private Compte compte;

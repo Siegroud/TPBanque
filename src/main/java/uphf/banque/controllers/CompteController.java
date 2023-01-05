@@ -35,7 +35,8 @@ public class CompteController extends ExceptionService {
         return compteService.createCompte(postCompteRequest);
     }
 
-
+    @PostMapping("comptes/{iban}/cartes/{numeroCarte}/paiement")
+    public CreatePaiementRequest
 
 
 }

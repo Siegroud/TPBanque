@@ -15,6 +15,6 @@ public class GetCarteResponse {
 
     private String dateExpiration;
 
-    private List<String> titulaireCarte;
+    private String titulaireCarte;
 
 }
