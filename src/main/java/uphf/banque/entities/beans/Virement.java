@@ -1,12 +1,11 @@
 package uphf.banque.entities.beans;
 
 import lombok.*;
+import uphf.banque.entities.rest.compte.TransactionDTO;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,10 +17,14 @@ public class Virement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idVirement;
-    private Date dateCreation;
+    private String dateCreation;
 
-    private double montant;
+    private String libelleVirement;
+    private float montant;
     private String ibanCompteEmetteur;
     private String ibanCompteBeneficiaire;
+
+    @OneToMany
+    private List<Transaction> transactions;
 
 }
