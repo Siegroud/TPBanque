@@ -17,12 +17,12 @@ public class CarteController {
     CarteService carteService;
 
     @GetMapping("/comptes/{iban}/cartes")
-    public GetCarteResponse getCarteByIban(@RequestParam String iban) throws ProcessException {
+    public GetCarteResponse getCarteByIban(@RequestParam("iban") String iban) throws ProcessException {
         return carteService.getCarteByIban(iban);
     }
 
     @PostMapping("/comptes/{iban}/cartes")
-    public PostCarteResponse createCarte(@RequestParam String iban, @RequestBody PostCarteRequest postCarteRequest){
+    public PostCarteResponse createCarte(@RequestParam("iban") String iban, @RequestBody PostCarteRequest postCarteRequest){
         return carteService.createCarte(iban,postCarteRequest);
     }
 }

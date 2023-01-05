@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class PostPaiementRequest {
-    private double montant;
+    private float montant;
 
     private String dateCreation;
 }

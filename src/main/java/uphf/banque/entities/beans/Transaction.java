@@ -22,7 +22,7 @@ public class Transaction {
     private TypeTransaction typeTransaction;
 
     private TypeSource typeSource;
-    private Date dateCreation;
+    private String dateCreation;
     private String idSource;
 
 

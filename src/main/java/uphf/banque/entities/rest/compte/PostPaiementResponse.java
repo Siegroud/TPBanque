@@ -11,7 +11,7 @@ import uphf.banque.entities.TypeTransaction;
 public class PostPaiementResponse {
     private int idTransaction;
 
-    private double montant;
+    private float montant;
 
     private TypeTransaction typeTransaction;
 

@@ -3,10 +3,14 @@ package uphf.banque.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uphf.banque.entities.TypeCompte;
+import uphf.banque.entities.TypeSource;
+import uphf.banque.entities.TypeTransaction;
+import uphf.banque.entities.beans.Carte;
 import uphf.banque.entities.beans.Client;
 import uphf.banque.entities.beans.Compte;
 import uphf.banque.entities.beans.Transaction;
 import uphf.banque.entities.rest.compte.*;
+import uphf.banque.repositories.CarteRepository;
 import uphf.banque.repositories.ClientRepository;
 import uphf.banque.repositories.CompteRepository;
 import uphf.banque.repositories.TransactionRepository;
@@ -28,6 +32,9 @@ public class CompteService extends ExceptionService{
 
     @Autowired
     TransactionService transactionService;
+
+    @Autowired
+    CarteRepository carteRepository;
     private static final String COMPTE_NON_TROUVE = "Le compte n'a pas été trouvé.";
 
     public GetComptesResponse getComptesByIdClient(int id) {
@@ -102,5 +109,33 @@ public class CompteService extends ExceptionService{
                 .iban(iban)
                 .dateCreation(com.getDateCreation())
                 .build();
+    }
+
+    public PostPaiementResponse createPaiement(String iban, String numeroCarte, PostPaiementRequest postPaiementRequest){
+
+        Compte compte = compteRepository.findCompteByIban(iban);
+
+        List<Transaction> listTransaction = compte.getTransactions();
+        Carte carte = carteRepository.findCarteByCompte(compte);
+
+        Transaction transaction = Transaction.builder()
+                .montant(postPaiementRequest.getMontant())
+                .typeTransaction(TypeTransaction.DEBIT)
+                .typeSource(TypeSource.CARTE)
+                .dateCreation((LocalDateTime.now()).toString())
+                .idSource(Integer.toString(carte.getId()))
+                .build();
+
+        listTransaction.add(transaction);
+        compte.setTransactions(listTransaction);
+        compteRepository.save(compte);
+
+        PostPaiementResponse postPaiementResponse = PostPaiementResponse.builder()
+                .idTransaction(transaction.getId())
+                .montant(transaction.getMontant())
+                .typeTransaction(transaction.getTypeTransaction())
+                .dateCreation(transaction.getDateCreation())
+                .build();
+        return postPaiementResponse;
     }
 }

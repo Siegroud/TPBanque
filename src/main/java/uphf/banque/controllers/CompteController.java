@@ -4,13 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import uphf.banque.entities.beans.Transaction;
-import uphf.banque.entities.rest.compte.PostCompteRequest;
-import uphf.banque.entities.rest.compte.PostCompteResponse;
+import uphf.banque.entities.rest.compte.*;
 
-import uphf.banque.entities.rest.compte.TransactionDTO;
 import uphf.banque.services.CompteService;
 import uphf.banque.services.ExceptionService;
-import uphf.banque.entities.rest.compte.GetComptesResponse;
 import uphf.banque.services.TransactionService;
 
 @RestController
@@ -36,7 +33,9 @@ public class CompteController extends ExceptionService {
     }
 
     @PostMapping("comptes/{iban}/cartes/{numeroCarte}/paiement")
-    public CreatePaiementRequest
+    public PostPaiementResponse createPaiement(@RequestParam("iban") String iban, @RequestParam("numeroCarte") String numeroCarte,@RequestBody PostPaiementRequest postPaiementRequest){
+        return compteService.createPaiement(iban,numeroCarte,postPaiementRequest);
+    }
 
 
 }
