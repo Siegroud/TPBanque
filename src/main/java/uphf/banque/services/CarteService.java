@@ -21,7 +21,7 @@ import java.util.List;
 
 
 @Service
-public class CarteService {
+public class CarteService extends ExceptionService{
 
     @Autowired
     CompteService compteService;
@@ -78,6 +78,8 @@ public class CarteService {
                 .dateExpiration(dateExp)
                 .code(postCarteRequest.getCode())
                 .build();
+
+        carteRepository.save(carte);
 
         return PostCarteResponse.builder()
                 .titulaireCarte(carte.getTitulaireCarte())

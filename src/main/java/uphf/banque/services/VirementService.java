@@ -24,6 +24,8 @@ import java.util.List;
 public class VirementService {
 
     @Autowired
+    VirementRepository virementRepository;
+    @Autowired
     CompteRepository compteRepository;
 
     @Autowired
@@ -47,6 +49,8 @@ public class VirementService {
                 .montant(postVirementRequest.getMontant())
                 .transactions(listTransaction)
                 .build();
+
+        virementRepository.save(virement);
 
         PostVirementResponse postVirementResponse = PostVirementResponse.builder()
                 .idVirement(Integer.toString(virement.getIdVirement()))
