@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import uphf.banque.entities.Transaction;
 import uphf.banque.services.CompteService;
-import uphf.banque.services.ExceptionService;
 import uphf.banque.services.dto.carte.GetCarteResponse;
 import uphf.banque.services.dto.carte.PostCarteRequest;
 import uphf.banque.services.dto.carte.PostCarteResponse;
@@ -18,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("comptes")
-public class CompteController extends ExceptionService {
+public class CompteController {
     @Autowired
     private CompteService compteService;
 
@@ -26,13 +25,13 @@ public class CompteController extends ExceptionService {
 
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity getComptesByIdClient(@PathVariable int id) {    // GetComptesResponse
-        if (id < 0){
+    @GetMapping
+    public ResponseEntity getComptesByIdClient(@RequestParam int idClient) {    // GetComptesResponse
+        if (idClient < 0){
             return ResponseEntity.badRequest().body("Les donnéees sont incorrectes");
         } else {
             try {
-                GetComptesResponse getComptesResponse = this.compteService.getComptesByIdClient(id);
+                GetComptesResponse getComptesResponse = this.compteService.getComptesByClient(idClient);
                 return ResponseEntity.ok().body(getComptesResponse);
             } catch (ResponseStatusException e){
                 if(e.getStatus().equals(HttpStatus.NOT_FOUND)){

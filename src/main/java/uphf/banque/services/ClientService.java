@@ -1,10 +1,11 @@
 package uphf.banque.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import uphf.banque.entities.Client;
 import uphf.banque.entities.Compte;
-import uphf.banque.exceptions.ProcessException;
 import uphf.banque.repositories.ClientRepository;
 import uphf.banque.services.dto.client.*;
 
@@ -15,13 +16,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ClientService extends ExceptionService {
+public class ClientService  {
     @Autowired
     private ClientRepository clientRepository;
     public static final String CLIENT_NON_TROUVE = "Le client n'a pas été trouvé.";
 
 
-    public List<GetClientResponse> getClientsByNomAndPrenom(String nom, String prenom)throws ProcessException {
+    public List<GetClientResponse> getClientsByNomAndPrenom(String nom, String prenom) {
         return this.clientRepository.findClientsByPrenomAndNom(prenom,nom)
                 .stream()
                 .map(client -> GetClientResponse.builder()
@@ -66,10 +67,11 @@ public class ClientService extends ExceptionService {
     }
 
 
-    public PutClientResponse updateClient(PutClientRequest putClientRequest) throws ProcessException {
+    public PutClientResponse updateClient(PutClientRequest putClientRequest)  {
         Client cli = clientRepository.findClientById(putClientRequest.getId());
-
-        if (cli == null) throw new ProcessException(String.format((CLIENT_NON_TROUVE + "%s"),putClientRequest.getId()));
+        if(cli == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Client non trouvé.");
+        }
 
         cli.setPrenom(putClientRequest.getPrenom());
         cli.setNom(putClientRequest.getNom());

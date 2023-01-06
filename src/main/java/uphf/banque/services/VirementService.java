@@ -1,10 +1,11 @@
 package uphf.banque.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import uphf.banque.entities.Compte;
-import uphf.banque.entities.Transaction;
-import uphf.banque.entities.Virement;
+import org.springframework.web.server.ResponseStatusException;
+import uphf.banque.entities.*;
+import uphf.banque.repositories.TransactionRepository;
 import uphf.banque.services.dto.compte.TransactionDTO;
 import uphf.banque.services.dto.virement.PostVirementRequest;
 import uphf.banque.services.dto.virement.PostVirementResponse;
@@ -24,35 +25,102 @@ public class VirementService {
     private CompteRepository compteRepository;
 
     @Autowired
+    private TransactionRepository transactionRepository;
+    @Autowired
     private CompteService compteService;
 
     public PostVirementResponse createVirement(PostVirementRequest postVirementRequest){
 
+
+
         Compte compte = compteRepository.findCompteByIban(postVirementRequest.getIbanCompteBeneficiaire());
 
-        List<Transaction> listTransaction = compte.getTransactions();
-        List<TransactionDTO> listTransactionDTO = new ArrayList<>();
+        Compte emet = compteRepository.findCompteByIban(postVirementRequest.getIbanCompteEmetteur());
 
-        for (Transaction transaction:listTransaction) {
-             listTransactionDTO.add(compteService.getTransactionDTO(transaction));
+        if (compte == null || emet == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Compte(s) non trouvé(s)");
+        }
+        if(Float.parseFloat(emet.getSolde())<postVirementRequest.getMontant()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Solde insuffisant.");
         }
 
-        Virement virement = Virement.builder()
+
+        List<TransactionDTO> listTransactionDTOEmet = new ArrayList<>();
+
+        List<TransactionDTO> listTransactionDTOBenef = new ArrayList<>();
+
+
+        Transaction transactionBenef = Transaction.builder()
+                .montant(postVirementRequest.getMontant())
+                .typeTransaction(TypeTransaction.CREDIT)
+                .typeSource(TypeSource.VIREMENT)
                 .dateCreation((LocalDateTime.now()).toString())
+                .idSource(postVirementRequest.getIbanCompteEmetteur())
+                .build();
+
+        Transaction transactionEmet = Transaction.builder()
+                .montant(postVirementRequest.getMontant())
+                .typeTransaction(TypeTransaction.DEBIT)
+                .typeSource(TypeSource.VIREMENT)
+                .dateCreation((LocalDateTime.now()).toString())
+                .idSource(postVirementRequest.getIbanCompteEmetteur())
+                .build();
+
+        transactionRepository.save(transactionEmet);
+        compte.getTransactions().add(transactionBenef);
+        emet.getTransactions().add(transactionEmet);
+
+
+        List<Transaction> listTransactionEmet = compte.getTransactions();
+        for (Transaction trans:listTransactionEmet) {
+            listTransactionDTOEmet.add(compteService.getTransactionDTO(trans));
+        }
+
+        TransactionDTO transactionDTO = compteService.getTransactionDTO(transactionEmet);
+        listTransactionDTOEmet.add(transactionDTO);
+
+
+        List<Transaction> listTransactionBenef = compte.getTransactions();
+        for (Transaction trans:listTransactionBenef) {
+            listTransactionDTOEmet.add(compteService.getTransactionDTO(trans));
+        }
+
+        transactionDTO = compteService.getTransactionDTO(transactionEmet);
+        listTransactionDTOEmet.add(transactionDTO);
+
+        Virement virementEmet = Virement.builder()
+                .dateCreation(transactionEmet.getDateCreation())
                 .ibanCompteEmetteur(postVirementRequest.getIbanCompteEmetteur())
                 .ibanCompteBeneficiaire(postVirementRequest.getIbanCompteBeneficiaire())
                 .montant(postVirementRequest.getMontant())
-                .transactions(listTransaction)
+                .transactions(listTransactionEmet)
                 .build();
 
-        virementRepository.save(virement);
+        Virement virementBenef = Virement.builder()
+                .dateCreation(transactionEmet.getDateCreation())
+                .ibanCompteEmetteur(postVirementRequest.getIbanCompteEmetteur())
+                .ibanCompteBeneficiaire(postVirementRequest.getIbanCompteBeneficiaire())
+                .montant(postVirementRequest.getMontant())
+                .transactions(listTransactionBenef)
+                .build();
+
+
+        virementRepository.save(virementEmet);
+        virementRepository.save(virementBenef);
+
+        emet.setSolde(Float.toString(Float.parseFloat(emet.getSolde())- virementEmet.getMontant()));
+        compte.setSolde(Float.toString(Float.parseFloat(compte.getSolde())+ virementEmet.getMontant()));
+
+        compteRepository.save(compte);
+        compteRepository.save(emet);
 
         PostVirementResponse postVirementResponse = PostVirementResponse.builder()
-                .idVirement(Integer.toString(virement.getIdVirement()))
-                .dateCreation(virement.getDateCreation())
-                .transactions(listTransactionDTO)
+                .idVirement(Integer.toString(virementEmet.getIdVirement()))
+                .dateCreation(virementEmet.getDateCreation())
+                .transactions(listTransactionDTOEmet)
                 .build();
         return postVirementResponse;
     }
+
 
 }

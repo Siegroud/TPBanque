@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public class Client {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Integer id;
 
     private String prenom;

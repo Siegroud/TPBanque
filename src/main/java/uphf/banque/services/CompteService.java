@@ -11,7 +11,6 @@ import uphf.banque.entities.Carte;
 import uphf.banque.entities.Client;
 import uphf.banque.entities.Compte;
 import uphf.banque.entities.Transaction;
-import uphf.banque.exceptions.ProcessException;
 import uphf.banque.repositories.CarteRepository;
 import uphf.banque.repositories.ClientRepository;
 import uphf.banque.repositories.CompteRepository;
@@ -29,7 +28,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 @Service
-public class CompteService extends ExceptionService{
+public class CompteService {
     @Autowired
     private CompteRepository compteRepository;
 
@@ -46,8 +45,8 @@ public class CompteService extends ExceptionService{
 
     private static final String COMPTE_NON_TROUVE = "Le compte n'a pas été trouvé.";
 
-    public GetComptesResponse getComptesByIdClient(int id) {
-        Client cli = clientRepository.findClientById(id);
+    public GetComptesResponse getComptesByClient(int idClient) {
+        Client cli = clientRepository.findClientById(idClient);
 
         List<Compte> listcom = compteRepository.findComptesByClient(cli);
 
