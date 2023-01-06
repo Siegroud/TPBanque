@@ -2,17 +2,12 @@ package uphf.banque.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uphf.banque.entities.TypeSource;
-import uphf.banque.entities.TypeTransaction;
-import uphf.banque.entities.beans.Carte;
-import uphf.banque.entities.beans.Compte;
-import uphf.banque.entities.beans.Transaction;
-import uphf.banque.entities.beans.Virement;
-import uphf.banque.entities.rest.compte.PostPaiementRequest;
-import uphf.banque.entities.rest.compte.PostPaiementResponse;
-import uphf.banque.entities.rest.compte.TransactionDTO;
-import uphf.banque.entities.rest.virement.PostVirementRequest;
-import uphf.banque.entities.rest.virement.PostVirementResponse;
+import uphf.banque.entities.Compte;
+import uphf.banque.entities.Transaction;
+import uphf.banque.entities.Virement;
+import uphf.banque.services.dto.compte.TransactionDTO;
+import uphf.banque.services.dto.virement.PostVirementRequest;
+import uphf.banque.services.dto.virement.PostVirementResponse;
 import uphf.banque.repositories.CompteRepository;
 import uphf.banque.repositories.VirementRepository;
 
@@ -29,7 +24,7 @@ public class VirementService {
     private CompteRepository compteRepository;
 
     @Autowired
-    private TransactionService transactionService;
+    private CompteService compteService;
 
     public PostVirementResponse createVirement(PostVirementRequest postVirementRequest){
 
@@ -39,7 +34,7 @@ public class VirementService {
         List<TransactionDTO> listTransactionDTO = new ArrayList<>();
 
         for (Transaction transaction:listTransaction) {
-             listTransactionDTO.add(transactionService.getTransactionDTO(transaction));
+             listTransactionDTO.add(compteService.getTransactionDTO(transaction));
         }
 
         Virement virement = Virement.builder()

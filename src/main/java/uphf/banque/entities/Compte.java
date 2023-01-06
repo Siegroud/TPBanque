@@ -1,10 +1,8 @@
-package uphf.banque.entities.beans;
+package uphf.banque.entities;
 
 import lombok.*;
-import uphf.banque.entities.TypeCompte;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 @Entity

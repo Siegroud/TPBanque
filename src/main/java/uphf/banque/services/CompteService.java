@@ -1,22 +1,31 @@
 package uphf.banque.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRange;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import uphf.banque.entities.TypeCompte;
+import org.springframework.web.server.ResponseStatusException;
 import uphf.banque.entities.TypeSource;
 import uphf.banque.entities.TypeTransaction;
-import uphf.banque.entities.beans.Carte;
-import uphf.banque.entities.beans.Client;
-import uphf.banque.entities.beans.Compte;
-import uphf.banque.entities.beans.Transaction;
-import uphf.banque.entities.rest.compte.*;
+import uphf.banque.entities.Carte;
+import uphf.banque.entities.Client;
+import uphf.banque.entities.Compte;
+import uphf.banque.entities.Transaction;
+import uphf.banque.exceptions.ProcessException;
 import uphf.banque.repositories.CarteRepository;
 import uphf.banque.repositories.ClientRepository;
 import uphf.banque.repositories.CompteRepository;
 import uphf.banque.repositories.TransactionRepository;
+import uphf.banque.services.dto.carte.GetCarteResponse;
+import uphf.banque.services.dto.carte.PostCarteRequest;
+import uphf.banque.services.dto.carte.PostCarteResponse;
+import uphf.banque.services.dto.compte.*;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 @Service
@@ -28,19 +37,23 @@ public class CompteService extends ExceptionService{
     private ClientRepository clientRepository;
 
     @Autowired
+    private CarteRepository carteRepository;
+    @Autowired
     private TransactionRepository transactionRepository;
 
-    @Autowired
-    private TransactionService transactionService;
 
-    @Autowired
-    CarteRepository carteRepository;
+
+
     private static final String COMPTE_NON_TROUVE = "Le compte n'a pas été trouvé.";
 
     public GetComptesResponse getComptesByIdClient(int id) {
         Client cli = clientRepository.findClientById(id);
 
         List<Compte> listcom = compteRepository.findComptesByClient(cli);
+
+        if(listcom.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Aucun compte trouvé");
+        }
 
         List<CompteDTO> listcomDTO = new ArrayList<>();
 
@@ -52,7 +65,7 @@ public class CompteService extends ExceptionService{
             List<Transaction> listtran = transactionRepository.findTransactionsByCompte(com);
 
             for (Transaction transaction: listtran) {
-                listDTO.add(transactionService.getTransactionDTO(transaction));
+                listDTO.add(getTransactionDTO(transaction));
             }
 
             for(Client titulaire : com.getTitulairesCompte()){
@@ -116,26 +129,127 @@ public class CompteService extends ExceptionService{
         Compte compte = compteRepository.findCompteByIban(iban);
 
         List<Transaction> listTransaction = compte.getTransactions();
-        Carte carte = carteRepository.findCarteByCompte(compte);
+        Carte carte = carteRepository.findCarteByNumeroCarte(numeroCarte);
 
-        Transaction transaction = Transaction.builder()
-                .montant(postPaiementRequest.getMontant())
-                .typeTransaction(TypeTransaction.DEBIT)
-                .typeSource(TypeSource.CARTE)
-                .dateCreation((LocalDateTime.now()).toString())
-                .idSource(Integer.toString(carte.getId()))
+        if(compte == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Compte non trouvé");
+        }
+        if(carte == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Carte non trouvée");
+        }
+
+        if(carte.getCompte().getIban().equals(iban)){
+            if(Float.parseFloat(compte.getSolde()) >= postPaiementRequest.getMontant()){
+                compte.setSolde(Float.toString(Float.parseFloat(compte.getSolde()) - postPaiementRequest.getMontant()).toString());
+                compteRepository.save(compte);
+                Transaction transaction = Transaction.builder()
+                        .montant(postPaiementRequest.getMontant())
+                        .typeTransaction(TypeTransaction.DEBIT)
+                        .typeSource(TypeSource.CARTE)
+                        .dateCreation((LocalDateTime.now()).toString())
+                        .idSource(Integer.toString(carte.getId()))
+                        .build();
+                transactionRepository.save(transaction);
+                listTransaction.add(transaction);
+                compte.setTransactions(listTransaction);
+                compteRepository.save(compte);
+
+                PostPaiementResponse postPaiementResponse = PostPaiementResponse.builder()
+                        .idTransaction(transaction.getId())
+                        .montant(transaction.getMontant())
+                        .typeTransaction(transaction.getTypeTransaction())
+                        .dateCreation(transaction.getDateCreation())
+                        .build();
+                return postPaiementResponse;
+            }else{
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Solde insuffisant");
+            }
+        }else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Carte non associée au compte");
+        }
+
+    }
+
+
+    public List<GetCarteResponse> getCartesByIban(String iban) {
+
+        List<GetCarteResponse> getCarteResponses = new ArrayList<>();
+        Compte compte = compteRepository.findCompteByIban(iban);
+
+        List<Carte> cartes = carteRepository.findCartesByCompte(compte);
+
+        for (Carte carte: cartes) {
+            GetCarteResponse getCarteResponse = GetCarteResponse.builder()
+                    .numeroCarte(carte.getNumeroCarte())
+                    .dateExpiration(carte.getDateExpiration())
+                    .titulaireCarte(carte.getTitulaireCarte())
+                    .build();
+
+            getCarteResponses.add(getCarteResponse);
+        }
+
+
+        return getCarteResponses;
+    }
+
+    public String genererNumCarte(){
+        Long leftLimit = 100000000000L;
+        Long rightLimit = 999999999999L;
+        long generatedLong = (long) (Math.random() * (rightLimit - leftLimit));
+        return "4973"+Long.toString(generatedLong);
+    }
+
+    public String genererDateExpiration(){
+        GregorianCalendar calcStr1 = new GregorianCalendar();
+
+        calcStr1.setTime(new Date());
+        calcStr1.add(GregorianCalendar.YEAR,+2);
+        SimpleDateFormat sdf = new SimpleDateFormat("mm/yy");
+        return sdf.format(calcStr1.getTime());
+    }
+    public PostCarteResponse createCarte(String iban, PostCarteRequest postCarteRequest){
+        Compte compte = compteRepository.findCompteByIban(iban);
+
+        String numCarte = genererNumCarte();
+
+        String dateExp = genererDateExpiration();
+        Carte carte = Carte.builder()
+                .titulaireCarte(postCarteRequest.getTitulaireCarte())
+                .numeroCarte(numCarte)
+                .dateExpiration(dateExp)
+                .code(postCarteRequest.getCode())
                 .build();
 
-        listTransaction.add(transaction);
-        compte.setTransactions(listTransaction);
-        compteRepository.save(compte);
+        carteRepository.save(carte);
 
-        PostPaiementResponse postPaiementResponse = PostPaiementResponse.builder()
-                .idTransaction(transaction.getId())
+        PostCarteResponse postCarteResponse = PostCarteResponse.builder()
+                .titulaireCarte(carte.getTitulaireCarte())
+                .numeroCarte(carte.getNumeroCarte())
+                .dateExpiration(carte.getDateExpiration())
+                .build();
+
+        return postCarteResponse;
+
+
+
+    }
+
+    public List<Transaction> getTransactionsByCompte(Compte compte){
+        List<Transaction> list = transactionRepository.findTransactionsByCompte(compte);
+        return list;
+    }
+    public TransactionDTO getTransactionDTO(Transaction transaction){
+
+        TransactionDTO tran = TransactionDTO.builder()
+                .id(Integer.toString(transaction.getId()))
                 .montant(transaction.getMontant())
                 .typeTransaction(transaction.getTypeTransaction())
-                .dateCreation(transaction.getDateCreation())
+                .typeSource(transaction.getTypeSource())
+                .idSource(transaction.getIdSource())
                 .build();
-        return postPaiementResponse;
+
+        return tran;
     }
+
+
 }

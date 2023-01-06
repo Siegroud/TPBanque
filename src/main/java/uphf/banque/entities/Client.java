@@ -1,9 +1,8 @@
-package uphf.banque.entities.beans;
+package uphf.banque.entities;
 
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 
@@ -16,7 +15,7 @@ import java.util.List;
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     private String prenom;
     private String nom;

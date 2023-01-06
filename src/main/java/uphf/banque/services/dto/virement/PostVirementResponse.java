@@ -1,7 +1,7 @@
-package uphf.banque.entities.rest.virement;
+package uphf.banque.services.dto.virement;
 
 import lombok.*;
-import uphf.banque.entities.rest.compte.TransactionDTO;
+import uphf.banque.services.dto.compte.TransactionDTO;
 
 import java.util.List;
 

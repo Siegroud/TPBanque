@@ -1,15 +1,13 @@
-package uphf.banque.entities.rest.client;
+package uphf.banque.services.dto.client;
 
 import lombok.*;
-import uphf.banque.entities.beans.Client;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PostClientResponse {
-
+public class PutClientResponse {
     private int id;
 
     private String prenom;
@@ -19,8 +17,9 @@ public class PostClientResponse {
     private String dateNaissance;
 
     private String telephone;
+
     private String adressePostale;
 
-    private String dateCreation;
+    private String dateModification;
 
 }

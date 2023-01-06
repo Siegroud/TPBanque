@@ -1,15 +1,16 @@
 package uphf.banque.controllers;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uphf.banque.entities.beans.Compte;
-import uphf.banque.entities.rest.client.*;
-import uphf.banque.entities.rest.compte.PostCompteRequest;
+import org.springframework.web.client.HttpClientErrorException;
+import uphf.banque.controllers.errors.HttpErreurFonctionnelle;
+import uphf.banque.services.dto.client.*;
 import uphf.banque.exceptions.ProcessException;
 import uphf.banque.services.ClientService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,18 +21,30 @@ public class ClientController {
     private ClientService clientService;
 
     @GetMapping
-            (
-                produces = {MediaType.APPLICATION_JSON_VALUE}
-            )
-    public GetClientResponse getClientsByNomAndPrenom(@RequestParam("nom") String nom, @RequestParam("prenom") String prenom) throws ProcessException {
-        return clientService.getClientsByNomAndPrenom(nom,prenom);
+    public ResponseEntity getClientsByNomAndPrenom(@RequestParam("nom") String nom, @RequestParam("prenom") String prenom) throws ProcessException {
+        if(nom.isEmpty() || prenom.isEmpty()){
+            return ResponseEntity.badRequest().body(new HttpErreurFonctionnelle("Données en entrée manquantes."));  //400
+        }else{
+            try{
+                List<GetClientResponse> getClientResponses = this.clientService.getClientsByNomAndPrenom(nom,prenom);
+                if(!getClientResponses.isEmpty()){
+                    return ResponseEntity.ok().body(getClientResponses);    //201
+                }else{
+                    return ResponseEntity.noContent().build();
+                }
+            }catch (Exception e){
+                return ResponseEntity.internalServerError().body("Une erreur de traitement a été rencontrée");  //500
+            }
+        }
+
     }
 
-    @PostMapping(
-            consumes = {MediaType.APPLICATION_JSON_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE}
-    )
-    public PostClientResponse createClient(@RequestBody PostClientRequest postClientRequest) throws ProcessException {
+    @PostMapping
+    public ResponseEntity createClient(@RequestBody PostClientRequest postClientRequest) throws ProcessException {
+        if(postClientRequest == null || postClientRequest.getNom() ==null || postClientRequest.getPrenom() == null || postClientRequest.getDateNaissance() == null
+                || postClientRequest.getAdressePostale() == null || postClientRequest.getTelephone()==null){
+            return ResponseEntity.badRequest().body(new HttpErreurFonctionnelle("Les données en entrée du service sont non renseignées ou incorrectes.")); // 400
+        }
         return clientService.createClient(postClientRequest);
     }
 

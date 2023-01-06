@@ -1,4 +1,4 @@
-package uphf.banque.entities.rest.compte;
+package uphf.banque.services.dto.compte;
 
 import lombok.*;
 import uphf.banque.entities.TypeSource;

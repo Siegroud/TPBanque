@@ -1,11 +1,8 @@
-package uphf.banque.entities.beans;
+package uphf.banque.entities;
 
 import lombok.*;
-import uphf.banque.entities.TypeSource;
-import uphf.banque.entities.TypeTransaction;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -16,7 +13,7 @@ import java.util.Date;
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     private float montant;
     private TypeTransaction typeTransaction;

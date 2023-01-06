@@ -1,4 +1,4 @@
-package uphf.banque.entities.rest.carte;
+package uphf.banque.services.dto.carte;
 
 import lombok.*;
 
@@ -7,10 +7,12 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PostCarteResponse {
-    private String titulaireCarte;
+public class GetCarteResponse {
 
     private String numeroCarte;
 
     private String dateExpiration;
+
+    private String titulaireCarte;
+
 }

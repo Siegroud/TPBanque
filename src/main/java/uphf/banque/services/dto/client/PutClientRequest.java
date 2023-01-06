@@ -1,4 +1,4 @@
-package uphf.banque.entities.rest.client;
+package uphf.banque.services.dto.client;
 
 import lombok.*;
 

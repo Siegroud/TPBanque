@@ -1,8 +1,8 @@
-package uphf.banque.entities.rest.compte;
+package uphf.banque.services.dto.compte;
 
 import lombok.*;
 import uphf.banque.entities.TypeCompte;
-import uphf.banque.entities.beans.Client;
+import uphf.banque.entities.Client;
 
 import java.util.List;
 @Getter
@@ -10,11 +10,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PostCompteRequest {
+public class PostCompteResponse {
     private String intituleCompte;
 
     private TypeCompte typeCompte;
 
     private List<Client> titulairesCompte;
+
+    private String iban;
+
+    private String dateCreation;
+
 
 }

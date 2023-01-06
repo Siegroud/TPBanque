@@ -1,10 +1,8 @@
-package uphf.banque.entities.beans;
+package uphf.banque.entities;
 
 import lombok.*;
-import uphf.banque.entities.rest.compte.TransactionDTO;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -16,7 +14,7 @@ import java.util.List;
 public class Virement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idVirement;
+    private Integer idVirement;
     private String dateCreation;
 
     private String libelleVirement;

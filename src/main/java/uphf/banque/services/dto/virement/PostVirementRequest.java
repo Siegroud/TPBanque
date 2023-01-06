@@ -1,4 +1,4 @@
-package uphf.banque.entities.rest.virement;
+package uphf.banque.services.dto.virement;
 
 import lombok.*;
 

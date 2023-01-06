@@ -1,4 +1,4 @@
-package uphf.banque.entities.beans;
+package uphf.banque.entities;
 
 import lombok.*;
 
@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class Carte {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     private String numeroCarte;
     private String dateExpiration;

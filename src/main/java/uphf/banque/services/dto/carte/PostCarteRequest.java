@@ -1,4 +1,4 @@
-package uphf.banque.entities.rest.carte;
+package uphf.banque.services.dto.carte;
 
 import lombok.*;
 

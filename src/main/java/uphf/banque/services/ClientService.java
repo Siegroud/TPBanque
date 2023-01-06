@@ -2,16 +2,17 @@ package uphf.banque.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uphf.banque.entities.beans.Client;
-import uphf.banque.entities.beans.Compte;
-import uphf.banque.entities.rest.client.*;
+import uphf.banque.entities.Client;
+import uphf.banque.entities.Compte;
 import uphf.banque.exceptions.ProcessException;
 import uphf.banque.repositories.ClientRepository;
+import uphf.banque.services.dto.client.*;
 
 import java.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ClientService extends ExceptionService {
@@ -20,16 +21,19 @@ public class ClientService extends ExceptionService {
     public static final String CLIENT_NON_TROUVE = "Le client n'a pas été trouvé.";
 
 
-
-    public GetClientResponse getClientsByNomAndPrenom(String nom, String prenom)throws ProcessException {
-        List<Client> listcli = clientRepository.findClientsByPrenomAndNom(nom,prenom);
-        if (listcli == null) throw new ProcessException(String.format((CLIENT_NON_TROUVE + "%s"), nom));
-
-        return GetClientResponse.builder()
-                .clients(listcli)
-                .build();
+    public List<GetClientResponse> getClientsByNomAndPrenom(String nom, String prenom)throws ProcessException {
+        return this.clientRepository.findClientsByPrenomAndNom(prenom,nom)
+                .stream()
+                .map(client -> GetClientResponse.builder()
+                        .id(client.getId())
+                        .nom(client.getNom())
+                        .prenom(client.getPrenom())
+                        .dateNaissance(client.getDateNaissance())
+                        .telephone(client.getTelephone())
+                        .adressePostale(client.getAdressePostale())
+                        .dateCreation(client.getDateCreation())
+                        .build()).collect(Collectors.toList());
     }
-
 
 
     public PostClientResponse createClient(PostClientRequest postClientRequest){
