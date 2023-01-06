@@ -3,6 +3,7 @@ package uphf.banque.services.dto.compte;
 import lombok.*;
 import uphf.banque.entities.TypeCompte;
 import uphf.banque.entities.Client;
+import uphf.banque.services.dto.client.ClientDTO;
 
 import java.util.List;
 @Getter
@@ -15,6 +16,6 @@ public class PostCompteRequest {
 
     private TypeCompte typeCompte;
 
-    private List<Client> titulairesCompte;
+    private List<ClientDTO> titulairesCompte;
 
 }

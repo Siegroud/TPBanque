@@ -20,7 +20,11 @@ public class Transaction {
 
     private TypeSource typeSource;
     private String dateCreation;
-    private String idSource;
+
+    private String virementSource;
+
+    private String carteSource;
+
 
 
 }

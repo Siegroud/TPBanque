@@ -22,13 +22,13 @@ public class Compte {
     private TypeCompte typeCompte;
     private String dateCreation;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.ALL})
     private List<Client> titulairesCompte;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<Carte> cartes;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<Transaction> transactions;
 
 

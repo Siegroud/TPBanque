@@ -7,6 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class HttpErreurFonctionnelle {
+public class HttpErrorResponse {
     private String message;
 }

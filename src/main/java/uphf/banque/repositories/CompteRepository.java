@@ -12,7 +12,7 @@ public interface CompteRepository extends JpaRepository<Compte,Integer> {
 
     Compte findCompteByIban(String iban); //Récupération compte avec iban
 
-    List<Compte> findComptesByClient(Client client);
+    List<Compte> findComptesByTitulairesCompteContaining(Client client);
 
 
 }

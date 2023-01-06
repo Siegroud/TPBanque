@@ -12,6 +12,7 @@ import uphf.banque.services.dto.virement.PostVirementResponse;
 import uphf.banque.repositories.CompteRepository;
 import uphf.banque.repositories.VirementRepository;
 
+import javax.swing.text.TabableView;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public class VirementService {
 
     @Autowired
     private TransactionRepository transactionRepository;
+
     @Autowired
     private CompteService compteService;
 
@@ -55,7 +57,7 @@ public class VirementService {
                 .typeTransaction(TypeTransaction.CREDIT)
                 .typeSource(TypeSource.VIREMENT)
                 .dateCreation((LocalDateTime.now()).toString())
-                .idSource(postVirementRequest.getIbanCompteEmetteur())
+                .virementSource(postVirementRequest.getIbanCompteEmetteur())
                 .build();
 
         Transaction transactionEmet = Transaction.builder()
@@ -63,30 +65,25 @@ public class VirementService {
                 .typeTransaction(TypeTransaction.DEBIT)
                 .typeSource(TypeSource.VIREMENT)
                 .dateCreation((LocalDateTime.now()).toString())
-                .idSource(postVirementRequest.getIbanCompteEmetteur())
+                .virementSource(postVirementRequest.getIbanCompteEmetteur())
                 .build();
 
         transactionRepository.save(transactionEmet);
         compte.getTransactions().add(transactionBenef);
         emet.getTransactions().add(transactionEmet);
 
-
-        List<Transaction> listTransactionEmet = compte.getTransactions();
+        List<Transaction> listTransactionEmet = new ArrayList<>(emet.getTransactions());
         for (Transaction trans:listTransactionEmet) {
             listTransactionDTOEmet.add(compteService.getTransactionDTO(trans));
         }
 
-        TransactionDTO transactionDTO = compteService.getTransactionDTO(transactionEmet);
-        listTransactionDTOEmet.add(transactionDTO);
 
+        List<Transaction> listTransactionBenef = new ArrayList<>(compte.getTransactions());
 
-        List<Transaction> listTransactionBenef = compte.getTransactions();
         for (Transaction trans:listTransactionBenef) {
-            listTransactionDTOEmet.add(compteService.getTransactionDTO(trans));
+            listTransactionDTOBenef.add(compteService.getTransactionDTO(trans));
         }
 
-        transactionDTO = compteService.getTransactionDTO(transactionEmet);
-        listTransactionDTOEmet.add(transactionDTO);
 
         Virement virementEmet = Virement.builder()
                 .dateCreation(transactionEmet.getDateCreation())

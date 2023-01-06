@@ -1,13 +1,11 @@
 package uphf.banque.controllers;
 
-import org.apache.catalina.connector.Response;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
-import uphf.banque.controllers.errors.HttpErreurFonctionnelle;
+import uphf.banque.controllers.errors.HttpErrorResponse;
 import uphf.banque.services.dto.client.*;
 import uphf.banque.services.ClientService;
 
@@ -23,7 +21,7 @@ public class ClientController {
     @GetMapping
     public ResponseEntity getClientsByNomAndPrenom(@RequestParam("nom") String nom, @RequestParam("prenom") String prenom)  {
         if(nom.isEmpty() || prenom.isEmpty()){
-            return ResponseEntity.badRequest().body(new HttpErreurFonctionnelle("Données en entrée manquantes."));  //400
+            return ResponseEntity.badRequest().body(new HttpErrorResponse("Données en entrée manquantes."));  //400
         }else{
             try{
                 List<GetClientResponse> getClientResponses = this.clientService.getClientsByNomAndPrenom(nom,prenom);
@@ -43,7 +41,7 @@ public class ClientController {
     public ResponseEntity createClient(@RequestBody PostClientRequest postClientRequest)  {
         if(postClientRequest == null || postClientRequest.getNom() ==null || postClientRequest.getPrenom() == null || postClientRequest.getDateNaissance() == null
                 || postClientRequest.getAdressePostale() == null || postClientRequest.getTelephone()==null){
-            return ResponseEntity.badRequest().body(new HttpErreurFonctionnelle("Les données en entrée du service sont non renseignées ou incorrectes.")); // 400
+            return ResponseEntity.badRequest().body(new HttpErrorResponse("Les données en entrée du service sont non renseignées ou incorrectes.")); // 400
         }else{
             try{
                 PostClientResponse postClientResponse = this.clientService.createClient(postClientRequest);
@@ -59,7 +57,7 @@ public class ClientController {
     public ResponseEntity updateClient(@RequestBody PutClientRequest putClientRequest) {
         if(putClientRequest== null || putClientRequest.getId()<=0 || putClientRequest.getNom()==null || putClientRequest.getPrenom()==null
                 || putClientRequest.getAdressePostale()==null || putClientRequest.getTelephone() == null || putClientRequest.getDateNaissance()==null){
-            return ResponseEntity.badRequest().body(new HttpErreurFonctionnelle("Les données en entrée du service sont non renseignées ou incorrectes."));
+            return ResponseEntity.badRequest().body(new HttpErrorResponse("Les données en entrée du service sont non renseignées ou incorrectes."));
         }else{
             try{
                 PutClientResponse putClientResponse = this.clientService.updateClient(putClientRequest);

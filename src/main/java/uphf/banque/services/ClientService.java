@@ -48,7 +48,7 @@ public class ClientService  {
                 .adressePostale(postClientRequest.getAdressePostale())
                 .dateCreation((LocalDateTime.now()).toString())
                 .codeBanque(30003)
-                .codeGuichet(02054)
+                .codeGuichet(12054)
                 .comptes(list)
                 .dateModification(null)
                 .build();
@@ -82,11 +82,13 @@ public class ClientService  {
         clientRepository.save(cli);
 
         return PutClientResponse.builder()
+                .id(putClientRequest.getId())
                 .prenom(putClientRequest.getPrenom())
                 .nom(putClientRequest.getNom())
                 .dateNaissance(putClientRequest.getDateNaissance())
                 .telephone(putClientRequest.getTelephone())
-                .adressePostale(putClientRequest.getAdressePostale()).build();
+                .adressePostale(putClientRequest.getAdressePostale())
+                .dateModification((LocalDateTime.now()).toString()).build();
     }
 
 }

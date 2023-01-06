@@ -22,7 +22,7 @@ public class Virement {
     private String ibanCompteEmetteur;
     private String ibanCompteBeneficiaire;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<Transaction> transactions;
 
 }

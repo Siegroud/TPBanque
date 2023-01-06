@@ -5,19 +5,12 @@ import org.springframework.http.HttpRange;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import uphf.banque.entities.TypeSource;
-import uphf.banque.entities.TypeTransaction;
-import uphf.banque.entities.Carte;
-import uphf.banque.entities.Client;
-import uphf.banque.entities.Compte;
-import uphf.banque.entities.Transaction;
-import uphf.banque.repositories.CarteRepository;
-import uphf.banque.repositories.ClientRepository;
-import uphf.banque.repositories.CompteRepository;
-import uphf.banque.repositories.TransactionRepository;
+import uphf.banque.entities.*;
+import uphf.banque.repositories.*;
 import uphf.banque.services.dto.carte.GetCarteResponse;
 import uphf.banque.services.dto.carte.PostCarteRequest;
 import uphf.banque.services.dto.carte.PostCarteResponse;
+import uphf.banque.services.dto.client.ClientDTO;
 import uphf.banque.services.dto.compte.*;
 
 import java.text.SimpleDateFormat;
@@ -37,18 +30,17 @@ public class CompteService {
 
     @Autowired
     private CarteRepository carteRepository;
+
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private VirementRepository virementRepository;
 
-
-
-
-    private static final String COMPTE_NON_TROUVE = "Le compte n'a pas été trouvé.";
 
     public GetComptesResponse getComptesByClient(int idClient) {
         Client cli = clientRepository.findClientById(idClient);
 
-        List<Compte> listcom = compteRepository.findComptesByClient(cli);
+        List<Compte> listcom = compteRepository.findComptesByTitulairesCompteContaining(cli);
 
         if(listcom.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Aucun compte trouvé");
@@ -61,7 +53,20 @@ public class CompteService {
 
             List<TransactionDTO> listDTO = new ArrayList<>();
 
-            List<Transaction> listtran = transactionRepository.findTransactionsByCompte(com);
+            List<Carte> carteList = carteRepository.findCartesByCompte(com);
+
+            List<Virement> virementList = virementRepository.findVirementsByIbanCompteBeneficiaire(com.getIban());
+
+            List<Transaction> listtran = new ArrayList<>(); //Notre liste de transactions à alimenter au fur et à mesure
+            for (Carte carte:
+                 carteList) {
+                listtran.addAll(transactionRepository.findTransactionsByCarteSource(carte.getNumeroCarte()));
+            }
+            for (Virement virement:
+                    virementList) {
+                listtran.addAll(transactionRepository.findTransactionsByVirementSource(virement.getIbanCompteEmetteur()));
+            }
+
 
             for (Transaction transaction: listtran) {
                 listDTO.add(getTransactionDTO(transaction));
@@ -88,29 +93,36 @@ public class CompteService {
         return GetComptesResponse.builder().comptes(listcomDTO).build();
     }
 
-    public String calculNumeroCompte(){
+    public Long calculNumeroCompte(){
         Long leftLimit = 10000000000L;
         Long rightLimit = 99999999999L;
         long generatedLong = (long) (Math.random() * (rightLimit - leftLimit));
-        return Long.toString(generatedLong);
+        return generatedLong;
     }
 
     public PostCompteResponse createCompte(PostCompteRequest postCompteRequest) {
-        int codeBanque = postCompteRequest.getTitulairesCompte().get(0).getCodeBanque();
-        int codeGuichet = postCompteRequest.getTitulairesCompte().get(0).getCodeGuichet();
+
+        List<Client> clientList = new ArrayList<>();
+        for (ClientDTO clientDTO:
+                postCompteRequest.getTitulairesCompte()) {
+            Client client = clientRepository.findClientById(Integer.parseInt(clientDTO.getIdClient()));
+            clientList.add(client);
+        }
+
+        int codeBanque = clientList.get(0).getCodeBanque();
+        int codeGuichet = clientList.get(0).getCodeGuichet();
 
 
-
-        int numeroCompte = Integer.parseInt(calculNumeroCompte());
-        int calcIban = 97 - (89 * codeBanque + 15 * codeGuichet + 3*numeroCompte)%97;
-        String iban = "FR76"+ Integer.toString(codeBanque)+Integer.toString(codeGuichet) + Integer.toString(numeroCompte)+ Integer.toString(calcIban);
+        long numeroCompte = calculNumeroCompte();
+        long calcIban = 97 - (89 * Long.parseLong(Integer.toString(codeBanque)) + 15 * Long.parseLong(Integer.toString(codeGuichet)) + 3*numeroCompte)%97;
+        String iban = "FR76"+ codeBanque + codeGuichet + numeroCompte + calcIban;
         Compte com = Compte.builder()
                 .intituleCompte(postCompteRequest.getIntituleCompte())
                 .typeCompte(postCompteRequest.getTypeCompte())
-                .titulairesCompte(postCompteRequest.getTitulairesCompte())
+                .titulairesCompte(clientList)
                 .iban(iban)
                 .dateCreation((LocalDateTime.now()).toString())
-                .solde("0")
+                .solde("1000")
                 .build();
         compteRepository.save(com);
 
@@ -126,13 +138,11 @@ public class CompteService {
     public PostPaiementResponse createPaiement(String iban, String numeroCarte, PostPaiementRequest postPaiementRequest){
 
         Compte compte = compteRepository.findCompteByIban(iban);
-
-        List<Transaction> listTransaction = compte.getTransactions();
-        Carte carte = carteRepository.findCarteByNumeroCarte(numeroCarte);
-
+        System.out.println(iban);
         if(compte == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Compte non trouvé");
         }
+        Carte carte = carteRepository.findCarteByNumeroCarte(numeroCarte);
         if(carte == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Carte non trouvée");
         }
@@ -146,11 +156,10 @@ public class CompteService {
                         .typeTransaction(TypeTransaction.DEBIT)
                         .typeSource(TypeSource.CARTE)
                         .dateCreation((LocalDateTime.now()).toString())
-                        .idSource(Integer.toString(carte.getId()))
+                        .carteSource(Integer.toString(carte.getId()))
                         .build();
                 transactionRepository.save(transaction);
-                listTransaction.add(transaction);
-                compte.setTransactions(listTransaction);
+                compte.getTransactions().add(transaction);
                 compteRepository.save(compte);
 
                 PostPaiementResponse postPaiementResponse = PostPaiementResponse.builder()
@@ -217,6 +226,7 @@ public class CompteService {
                 .numeroCarte(numCarte)
                 .dateExpiration(dateExp)
                 .code(postCarteRequest.getCode())
+                .compte(compte)
                 .build();
 
         carteRepository.save(carte);
@@ -232,22 +242,33 @@ public class CompteService {
 
 
     }
-
-    public List<Transaction> getTransactionsByCompte(Compte compte){
-        List<Transaction> list = transactionRepository.findTransactionsByCompte(compte);
-        return list;
-    }
     public TransactionDTO getTransactionDTO(Transaction transaction){
 
-        TransactionDTO tran = TransactionDTO.builder()
-                .id(Integer.toString(transaction.getId()))
-                .montant(transaction.getMontant())
-                .typeTransaction(transaction.getTypeTransaction())
-                .typeSource(transaction.getTypeSource())
-                .idSource(transaction.getIdSource())
-                .build();
+        String idsource;
+        if(transaction.getId() != null){
+            if(transaction.getCarteSource() == null){
+                idsource = transaction.getVirementSource();
+                TransactionDTO tran = TransactionDTO.builder()
+                        .id(Integer.toString(transaction.getId()))
+                        .montant(transaction.getMontant())
+                        .typeTransaction(transaction.getTypeTransaction())
+                        .typeSource(transaction.getTypeSource())
+                        .idSource(idsource)
+                        .build();
+                return tran;
+            }else{
+                idsource = transaction.getCarteSource();
+                TransactionDTO tran = TransactionDTO.builder()
+                        .id(Integer.toString(transaction.getId()))
+                        .montant(transaction.getMontant())
+                        .typeTransaction(transaction.getTypeTransaction())
+                        .typeSource(transaction.getTypeSource())
+                        .idSource(idsource)
+                        .build();
+                return tran;
+            }
+        }else return null;
 
-        return tran;
     }
 
 
