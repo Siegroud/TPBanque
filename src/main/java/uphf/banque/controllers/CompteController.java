@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.server.ResponseStatusException;
+import uphf.banque.controllers.errors.HttpErreurFonctionnelle;
 import uphf.banque.entities.Transaction;
 import uphf.banque.services.CompteService;
 import uphf.banque.services.dto.carte.GetCarteResponse;
@@ -21,17 +22,15 @@ public class CompteController {
     @Autowired
     private CompteService compteService;
 
-    @Autowired
-
 
 
     @GetMapping
-    public ResponseEntity getComptesByIdClient(@RequestParam int idClient) {    // GetComptesResponse
-        if (idClient < 0){
-            return ResponseEntity.badRequest().body("Les donnéees sont incorrectes");
+    public ResponseEntity getComptesByIdClient(@RequestParam("id") int id) {    // GetComptesResponse
+        if (id < 0){
+            return ResponseEntity.badRequest().body(new HttpErreurFonctionnelle("Les donnéees sont incorrectes"));
         } else {
             try {
-                GetComptesResponse getComptesResponse = this.compteService.getComptesByClient(idClient);
+                GetComptesResponse getComptesResponse = this.compteService.getComptesByClient(id);
                 return ResponseEntity.ok().body(getComptesResponse);
             } catch (ResponseStatusException e){
                 if(e.getStatus().equals(HttpStatus.NOT_FOUND)){
@@ -48,7 +47,7 @@ public class CompteController {
     @PostMapping
     public ResponseEntity createCompte(@RequestBody PostCompteRequest postCompteRequest) {
         if (postCompteRequest.getIntituleCompte() == null || postCompteRequest.getTypeCompte()==null || postCompteRequest.getTitulairesCompte()==null){
-            return ResponseEntity.badRequest().body("Les données en entrées du service sont non renseignées ou incorrectes.");
+            return ResponseEntity.badRequest().body(new HttpErreurFonctionnelle("Les données en entrées du service sont non renseignées ou incorrectes."));
         }
         try {
             PostCompteResponse postCompteResponse =this.compteService.createCompte(postCompteRequest);
@@ -66,7 +65,7 @@ public class CompteController {
 
 
     @GetMapping("/{iban}/cartes")
-    private ResponseEntity getCartesByIban(@RequestParam String iban){
+    private ResponseEntity getCartesByIban(@RequestParam("iban") String iban){
         try{
             List<GetCarteResponse> getCarteResponses = this.compteService.getCartesByIban(iban);
             if(getCarteResponses.isEmpty()){
@@ -83,7 +82,7 @@ public class CompteController {
     }
 
     @PostMapping("/{iban}/cartes")
-    public ResponseEntity createCarte(@PathVariable String iban, @RequestBody PostCarteRequest postCarteRequest){
+    public ResponseEntity createCarte(@PathVariable("iban") String iban, @RequestBody PostCarteRequest postCarteRequest){
         if(postCarteRequest.getTitulaireCarte() == null){
             return ResponseEntity.badRequest().body("Les données en entrées du service sont non renseignées ou incorrectes.");
         }else{
@@ -104,7 +103,7 @@ public class CompteController {
     }
 
     @PostMapping("/{iban}/cartes/{numeroCarte}/paiement")
-    public ResponseEntity createPaiement(@PathVariable String iban, @PathVariable String numeroCarte, @RequestBody PostPaiementRequest postPaiementRequest){
+    public ResponseEntity createPaiement(@PathVariable("iban") String iban, @PathVariable("numeroCarte") String numeroCarte, @RequestBody PostPaiementRequest postPaiementRequest){
         if(postPaiementRequest.getMontant()<0){
             return ResponseEntity.badRequest().body("Les données en entrée sont incorrectes, le montant doit être positif.");
         }

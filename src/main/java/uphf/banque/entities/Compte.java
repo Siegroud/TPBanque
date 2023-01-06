@@ -23,10 +23,10 @@ public class Compte {
     private String dateCreation;
 
     @ManyToMany
-    List<Client> titulairesCompte;
+    private List<Client> titulairesCompte;
 
     @OneToMany
-    List<Carte> cartes;
+    private List<Carte> cartes;
 
     @OneToMany
     private List<Transaction> transactions;
